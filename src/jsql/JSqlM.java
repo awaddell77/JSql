@@ -34,7 +34,8 @@ public class JSqlM {
     }
     public void connect() throws SQLException{
         try{
-        this.conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/northwind","root", "password");
+        
+        this.conn = DriverManager.getConnection(this.host,this.user, this.password);
         }
         catch (SQLException sqe){
             System.out.println("EXCEPTION CAUGHT: " + sqe.getMessage());
