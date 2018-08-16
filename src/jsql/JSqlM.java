@@ -44,7 +44,7 @@ public class JSqlM {
     public void testColGet(){
         try{
         //ArrayList<String> res = getColumns("customers");
-        String[][] res = getColumns("customers");
+        String[][] res = getColumns1("customers");
         System.out.println(Arrays.toString(res));
         }
         catch (SQLException sqe){
@@ -53,18 +53,41 @@ public class JSqlM {
         
     }
     public void getColTest(String table) throws SQLException{
-        ArrayList<String> res = new ArrayList<>();
+        //ArrayList<String> res = new ArrayList<>();
+        
         int colind = 0;
         Statement stm = this.conn.createStatement();
+        
         ResultSet rs = stm.executeQuery("SHOW COLUMNS FROM " + table);
         ResultSetMetaData met = rs.getMetaData();
+        rs.last();
+        int leng = rs.getRow();
+        
+        String[][] cols = new String[getResLen(rs)][6];
+       
+        int rcount = 0;
+        //TODO: replace two dimensional array with something else
         while (rs.next()){
-            String rowId = rs.getString("Field");
-            System.out.println("COLUMN: " + rowId);
+            cols[rcount][0] = rs.getString("Field");
+            cols[rcount][1] = rs.getString("Type");
+            cols[rcount][2] = rs.getString("Null");
+            cols[rcount][3] = rs.getString("Key");
+            cols[rcount][4] = rs.getString("Default");
+            cols[rcount][5] = rs.getString("Extra");
+            System.out.println("COLUMNS: " + Arrays.toString(cols[rcount]));
+            rcount++;
             
         }
     }
-    public String[][] getColumns(String table) throws SQLException{
+    public int getResLen(ResultSet rs) throws SQLException{
+        rs.last();
+        int leng = rs.getRow();
+        rs.beforeFirst();
+        return leng;
+        
+        
+    }
+    public String[][] getColumns1(String table) throws SQLException{
         ArrayList<String> res = new ArrayList<>();
         int colind = 0;
         Statement stm = this.conn.createStatement();
@@ -75,7 +98,7 @@ public class JSqlM {
         int colc = met.getColumnCount();
         String[][] tarr = new String[colc][colc];
         //System.out.println("COLUMN NAME: "+ met.getColumnName(0));
-        //for whatever reason it doesn't seem to recognize longblob columns
+
         
         for (int i= 1 ; i <= colc; i++){
             String col = met.getColumnName(i);
